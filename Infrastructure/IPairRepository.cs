@@ -1,12 +1,12 @@
-﻿namespace Infrastructure
-{
-    public class IPairRepository
-    {
-        public IPairRepository(ILogger log)
-        {
-            this.log = log.ForContext(GetType());
-        }
+﻿using DomainModels;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-        public IQueryable<Pair>
+namespace Infrastructure
+{
+    public interface IPairRepository
+    {
+        Task<IEnumerable<Pair>> FindAllAsync();
+        Task SaveAllAsync(IEnumerable<Pair> pairs);
     }
 }

@@ -1,0 +1,38 @@
+﻿{
+    "Packages": {
+        "Serilog": {
+            "Properties": {
+                "Application": "HistoricalParserApplication"
+            },
+            "MinimumLevel": {
+                "Default": "Information",
+                "Override": {
+                    "Microsoft": "Information",
+                    "Microsoft.EntityFrameworkCore": "Warning",
+                    "System": "Error"
+                }
+            },
+            "Enrich": [ "FromLogContext", "WithMachineName", "WithEnvironmentUserName", "WithProcessName", "WithExceptionDetails" ],
+            "WriteTo": [
+                {
+                    "Name": "Console",
+                    /*"Args": {
+                    "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact"
+                }*/
+                },
+                {
+                    "Name": "Debug",
+                    "Args": {
+                        "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact"
+                    }
+                },
+                {
+                    "Name": "RollingFile",
+                    "Args": {
+                        "pathFormat": "log-{Date}"
+                    }
+                }
+            ]
+        }
+    }
+}

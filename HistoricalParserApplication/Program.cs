@@ -1,4 +1,5 @@
 ﻿using InfrastructureEf;
+using InfrastructureWeb;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
@@ -13,7 +14,8 @@ namespace HistoricalParserApplication
                 .UseArguments(args)
                 .UseConfiguration(Configuration)
                 .Use<ApplicationStartup>()
-                .Use<InfrastructureStartup>()
+                .Use<EfInfrastructureStartup>()
+                .Use<WebInfrastructureStartup>()
                 .Build()
                 .Run();
         }
@@ -22,8 +24,9 @@ namespace HistoricalParserApplication
         private static IConfiguration Configuration => new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appconfig.json", optional: false)
-            .AddJsonFile("appconfig.Core.json", optional: false)
-            .AddJsonFile("appconfig.Infrastructure.json", optional: false)
+            .AddJsonFile("appconfig.Packages.json", optional: false)
+            .AddJsonFile("appconfig.InfrastructureEf.json", optional: false)
+            .AddJsonFile("appconfig.InfrastructureWeb.json", optional: false)
             .Build();
     }
 }

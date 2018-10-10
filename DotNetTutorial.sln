@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModels", "DomainModel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructureEf", "InfrastructureEf\InfrastructureEf.csproj", "{EA5D1F72-FBD6-4805-90AF-1A998DB2412C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructureWeb", "InfrastructureWeb\InfrastructureWeb.csproj", "{BD1D5092-511F-4E19-860D-41F4F14B597F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{EA5D1F72-FBD6-4805-90AF-1A998DB2412C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA5D1F72-FBD6-4805-90AF-1A998DB2412C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA5D1F72-FBD6-4805-90AF-1A998DB2412C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD1D5092-511F-4E19-860D-41F4F14B597F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD1D5092-511F-4E19-860D-41F4F14B597F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD1D5092-511F-4E19-860D-41F4F14B597F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD1D5092-511F-4E19-860D-41F4F14B597F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

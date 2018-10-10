@@ -1,9 +1,9 @@
 ﻿using DomainModels;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace InfrastructureEf.EntityFramework
 {
-    internal class PairContext
+    internal class PairContext : DbContext
     {
         public PairContext()
             : base()
