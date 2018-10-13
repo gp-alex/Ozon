@@ -4,7 +4,6 @@ using InfrastructureWeb.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HistoricalParserApplication

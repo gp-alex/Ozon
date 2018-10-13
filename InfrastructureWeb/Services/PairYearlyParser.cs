@@ -11,15 +11,16 @@ using System.Text.RegularExpressions;
 
 namespace InfrastructureWeb.Services
 {
-    internal class PairFactory
+    internal class PairYearlyParser
     {
         private readonly ILogger log;
-        public PairFactory(ILogger log)
+        public PairYearlyParser(ILogger log)
         {
             this.log = log?.ForContext(GetType());
         }
 
-        public IEnumerable<Pair> CreateFromWebCsv(string csv)
+
+        public IEnumerable<Pair> Parse(string csv)
         {
             if (csv == null) throw new ArgumentNullException("csv");
 
@@ -29,7 +30,7 @@ namespace InfrastructureWeb.Services
                 using (var csvProvider = new CachedCsvReader(reader, true, '|'))
                 {
                     if (!csvProvider.HasHeaders) throw new ArgumentException("csv");
-                    return ParsePairs(csvProvider);
+                    return DoParse(csvProvider);
                 }
             }
             catch (Exception e)
@@ -39,14 +40,15 @@ namespace InfrastructureWeb.Services
             }
         }
 
-        private IEnumerable<Pair> ParsePairs(CachedCsvReader csv)
+        private IEnumerable<Pair> DoParse(CachedCsvReader csv)
         {
             var rates = new List<Pair>();
 
             var headers = csv.GetFieldHeaders();
             var dateColumnIndex = headers
-                .Where(x => x.Equals("Date"))
-                .Select((x, idx) => idx)
+                .Select((header, idx) => new { idx, header })
+                .Where(x => x.header.Equals("Date"))
+                .Select(x => x.idx)
                 .Single();
 
             var volumes = headers

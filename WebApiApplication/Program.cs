@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using InfrastructureEf;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,14 @@ namespace WebApiApplication
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseConfiguration(
+                    new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appconfig.Packages.json", optional: false)
+                        .AddJsonFile("appconfig.InfrastructureEf.json", optional: false)
+                        .AddJsonFile("appconfig.InfrastructureWeb.json", optional: false)
+                        .Build()
+                )
+                .UseStartup<WebHostStartup>();
     }
 }

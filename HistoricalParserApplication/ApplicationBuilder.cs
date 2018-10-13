@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LibraryInitializer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HistoricalParserApplication
 {
@@ -14,11 +13,11 @@ namespace HistoricalParserApplication
         private IConfiguration config;
         private ILogger log;
         private readonly IServiceCollection serviceContainer;
-        private readonly ICollection<Type> startups;
+        private readonly Startupper libraries;
         public ApplicationBuilder()
         {
             this.serviceContainer = new ServiceCollection();
-            this.startups = new List<Type>();
+            this.libraries = new Startupper();
         }
 
         public ApplicationBuilder UseArguments(string[] argv)
@@ -30,16 +29,13 @@ namespace HistoricalParserApplication
         public ApplicationBuilder UseConfiguration(IConfiguration config)
         {
             this.config = config;
+            this.libraries.UseConfiguration(config);
             return this;
         }
 
         public ApplicationBuilder Use<T>() where T : class
         {
-            var startup = typeof(T);
-            if (startups.Where(t => t.Equals(startup)).SingleOrDefault() == null)
-            {
-                startups.Add(startup);
-            }
+            this.libraries.UseInitializer(typeof(T));
             return this;
         }
 
@@ -47,14 +43,17 @@ namespace HistoricalParserApplication
         {
             if (config == null) throw new ArgumentNullException("No configuration provided");
 
-            ConfigureCoreServices(config, serviceContainer);
-            ConfigureLibraryServices(config, serviceContainer);
+            AddCoreServices(config, serviceContainer);
+            libraries.UseLogger(Log.Logger);
+            libraries.ConfigureServices(serviceContainer);
 
             var services = serviceContainer.BuildServiceProvider();
+            libraries.Configure(services);
+
             return services.GetService<Application>();
         }
 
-        private void ConfigureCoreServices(IConfiguration config, IServiceCollection services)
+        private void AddCoreServices(IConfiguration config, IServiceCollection services)
         {
 #if DEBUG
             Serilog.Debugging.SelfLog.Enable(
@@ -66,7 +65,7 @@ namespace HistoricalParserApplication
             );
 #endif
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
+                .ReadFrom.Configuration(config.GetSection("Packages"))
                 .Enrich.WithExceptionDetails()
                 .CreateLogger();
 
@@ -77,31 +76,6 @@ namespace HistoricalParserApplication
             services.AddLogging( // redirect default Microsoft Logger to Serilog
                 builder => builder.AddSerilog(dispose: true)
             );
-        }
-
-        private void ConfigureLibraryServices(IConfiguration config, IServiceCollection services)
-        {
-            foreach (var startup in startups)
-            {
-                try
-                {
-                    var configureServices = startup.GetMethod("ConfigureServices");
-                    if (configureServices != null)
-                    {
-                        var libraryConfig = config.GetSection(startup.Namespace);
-                        configureServices.Invoke(
-                            Activator.CreateInstance(
-                                startup, new object[] { libraryConfig }
-                            ),
-                            new object[] { services }
-                        );
-                    }
-                }
-                catch (Exception e)
-                {
-                    log.Warning(e, "ConfigureLibraryServices");
-                }
-            }
         }
     }
 }

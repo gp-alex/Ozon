@@ -27,7 +27,7 @@ namespace InfrastructureWeb
         private void ConfigureCustomServices(IServiceCollection services)
         {
             services.AddTransient(
-                (svc) => new WebPairRepository(
+                (svc) =>  new WebPairRepository(
                     config["DailyRatesEndpoint"],
                     config["YearlyRatesEndpoint"],
                     svc.GetRequiredService<IHttpClientFactory>(),

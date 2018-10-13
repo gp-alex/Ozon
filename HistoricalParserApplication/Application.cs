@@ -21,23 +21,30 @@ namespace HistoricalParserApplication
             ILogger log
         )
         {
-            this.requestedYears = requestedYears ?? throw new ArgumentNullException("requestedYears");
-            this.remotePairRepository = remotePairRepository ?? throw new ArgumentNullException("remotePairRepository");
-            this.persistancePairRepository = persistancePairRepository ?? throw new ArgumentNullException("persistancePairRepository");
+            this.requestedYears = requestedYears ?? throw new ArgumentNullException(nameof(requestedYears));
+            this.remotePairRepository = remotePairRepository ?? throw new ArgumentNullException(nameof(remotePairRepository));
+            this.persistancePairRepository = persistancePairRepository ?? throw new ArgumentNullException(nameof(persistancePairRepository));
             this.log = log?.ForContext(GetType());
+        }
+
+        public async Task RunAsync()
+        {
+            var tasks = requestedYears.Select(
+                async year => await remotePairRepository.FindForYearAsync(year)
+            );
+            var rates = (await Task.WhenAll(tasks))
+                .SelectMany(res => res)
+                .ToList();
+
+            await persistancePairRepository.DeleteAllAsync();
+            await persistancePairRepository.SaveAllAsync(rates);
         }
 
         public void Run()
         {
-            var tasks = requestedYears.Select(
-                year => remotePairRepository.FindForYearAsync(year)
-            ).ToArray();
-            Task.WaitAll(tasks);
-            var rates = tasks.SelectMany(t => t.Result).ToList();
-
-            Task.Run(
-                () => persistancePairRepository.SaveAllAsync(rates)
-            ).GetAwaiter().GetResult();
+            Task.WaitAll(
+                Task.Run(() => RunAsync())
+            );
         }
     }
 }

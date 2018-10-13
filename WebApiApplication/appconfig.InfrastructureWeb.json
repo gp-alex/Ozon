@@ -1,0 +1,6 @@
+﻿{
+    "InfrastructureWeb": {
+        "YearlyRatesEndpoint": "https://www.cnb.cz/en/financial_markets/foreign_exchange_market/exchange_rate_fixing/year.txt",
+        "DailyRatesEndpoint": "https://www.cnb.cz/en/financial_markets/foreign_exchange_market/exchange_rate_fixing/daily.txt"
+    }
+}

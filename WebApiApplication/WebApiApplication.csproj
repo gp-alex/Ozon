@@ -5,11 +5,41 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appconfig.InfrastructureEf.json" />
+    <Content Remove="appconfig.InfrastructureWeb.json" />
+    <Content Remove="appconfig.Packages.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AspInfrastructure\Crontab\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="appconfig.InfrastructureEf.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="appconfig.InfrastructureWeb.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="appconfig.Packages.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Serilog.Exceptions" Version="4.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="1.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InfrastructureEf\InfrastructureEf.csproj" />
+    <ProjectReference Include="..\InfrastructureWeb\InfrastructureWeb.csproj" />
+    <ProjectReference Include="..\LibraryInitializer\LibraryInitializer.csproj" />
   </ItemGroup>
 
 </Project>
