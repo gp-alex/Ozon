@@ -1,17 +1,20 @@
-﻿using Infrastructure;
+﻿using DomainServices;
+using Infrastructure;
 using InfrastructureEf;
 using InfrastructureEf.Repositories;
 using InfrastructureWeb;
-using InfrastructureWeb.Repositories;
 using LibraryInitializer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Exceptions;
 using System;
+using WebApiApplication.AspInfrastructure;
+using WebApiApplication.AspInfrastructure.Formatters;
 using WebApiApplication.AspInfrastructure.HostingServices;
 using WebApiApplication.ScheduledTasks;
 
@@ -29,6 +32,7 @@ namespace WebApiApplication
             libraries.UseConfiguration(config);
             libraries.UseInitializer<EfInfrastructureStartup>();
             libraries.UseInitializer<WebInfrastructureStartup>();
+            libraries.UseInitializer<DomainServicesStartup>();
         }
 
 
@@ -49,16 +53,22 @@ namespace WebApiApplication
                 .Enrich.WithExceptionDetails()
                 .CreateLogger();
 
-            services.AddTransient(
+            services.AddSingleton(
                 (svc) => Log.Logger
             );
             services.AddLogging( // redirect default Microsoft Logger to Serilog
-                builder => builder.AddSerilog(dispose: true)
+                builder => builder.AddSerilog(dispose: false)
             );
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(
+                options => {
+                    options.FormatterMappings.SetMediaTypeMappingForFormat("txt", new MediaTypeHeaderValue("text/plain"));
+                    options.OutputFormatters.Insert(0, new MonthlyReportTxtOutputFormatter());
+                }
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped<IPairRepository, EfPairRepository>();
+            services.Configure<ApiControlerOptions>(config.GetSection("ApiControlerOptions"));
 
             ConfigureScheduledTasks(services);
 

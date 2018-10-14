@@ -1,6 +1,7 @@
 ﻿using DomainModels;
 using Infrastructure;
 using InfrastructureEf.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,15 @@ namespace InfrastructureEf.Repositories
 
         public async Task<IEnumerable<Pair>> FindAllAsync()
         {
-            throw new NotImplementedException();
+            return await sharedContext.Pairs.ToArrayAsync();
         }
 
-        public async Task<IEnumerable<Pair>> FindAllInYearAsync(int year)
-            => throw new NotImplementedException("Not required for test task");
+        public async Task<IEnumerable<Pair>> FindAsync(Specification<Pair> spec)
+        {
+            return await sharedContext.Pairs
+                .Where(spec.ToExpression())
+                .ToArrayAsync();
+        }
 
         public async Task DeleteAllAsync()
         {

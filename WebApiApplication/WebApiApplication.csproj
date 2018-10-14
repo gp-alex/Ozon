@@ -37,6 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DomainRules\DomainRules.csproj" />
+    <ProjectReference Include="..\DomainServices\DomainServices.csproj" />
     <ProjectReference Include="..\InfrastructureEf\InfrastructureEf.csproj" />
     <ProjectReference Include="..\InfrastructureWeb\InfrastructureWeb.csproj" />
     <ProjectReference Include="..\LibraryInitializer\LibraryInitializer.csproj" />
